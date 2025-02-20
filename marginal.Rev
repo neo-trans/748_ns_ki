@@ -21,8 +21,8 @@ neo <- readDiscreteCharacterData("project748.neo.nex")
 trans <- readDiscreteCharacterData("project748.trans.nex")
 source("ns_ki.Rev")
 
-
-power_p = powerPosterior(mymodel, monitors, moves, ppFile, cats = steps)
+# In RevBayes <= 1.2.5, nSteps = cats + 1 - see #673
+power_p = powerPosterior(mymodel, monitors, moves, ppFile, cats = steps - 1)
 print("  - Created powerPosterior object")
 
 
