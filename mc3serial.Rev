@@ -30,14 +30,14 @@ mymc3 = mcmcmc(
 )
 print("  - Created MCMCMC object")
 
-checkFreq = 100
+checkFreq = 50
 
 if (fileExists("748_ns_ki_run_1_chain_0.ckp")) {
   print("  - Initializing from checkpoint")
   mymc3.initializeFromCheckpoint(ckpFile)
   runHours = 2
 } else {
-  mymc3.burnin(generations = 3000, tuningInterval = checkFreq * 3)
+  mymc3.burnin(generations = checkFreq * 30, tuningInterval = checkFreq * 3)
   runHours = 71
 }
 
@@ -48,7 +48,7 @@ stopping_rules[3] = srGelmanRubin(maxPSRF, paramFile, checkFreq)
 
 print("  - Commencing MCMCMC run at",
       time("year"), time("day"), time("seconds") / 60 / 60)
-print("    Terminate when ESS =", minEss, "or PSRF <", maxPSRF)
+print("    Run until ESS >", minEss, "or for", runHours, "hours")
 mymc3.run(rules = stopping_rules, checkpointFile = ckpFile, checkpointInterval = checkFreq)
 
 print("  # # # RUN COMPLETE # # #  ")
