@@ -33,24 +33,28 @@ power_p.run(generations = runGen)
 print("  - Completed powerPosterior run at", time("year"), time("day"),
       time("seconds") / 60 / 60)
 
+
 ss = steppingStoneSampler(
   file = ppFile,
   powerColumnName = "power",
   likelihoodColumnName = "likelihood"
 )
 write(ss.marginal(), file = ppOut)
-print("  Stepping stone marginal likelihood:")
-ss.marginal()
-
+print("  Stepping stone marginal likelihood:", ss.marginal(),
+      "; SE: ", ss.stdError())
 
 ps = pathSampler(
   file = ppFile,
   powerColumnName = "power",
   likelihoodColumnName = "likelihood"
 )
-write(ss.marginal(), ps.marginal(), burninGen, runGen, steps, "\n", file = ppOut)
-print("  Path sampler marginal likelihood:")
-ps.marginal()
+write(ss.marginal(), ps.marginal(), burninGen, runGen, steps,
+      ss.stdError(), ps.stdError(),
+      ss.stdError(bootstrap = TRUE), ps.stdError(bootstrap = TRUE),
+      "\n", file = ppOut)
+print("  Path sampler marginal likelihood:", ps.marginal(),
+      "; SE: ", ps.stdError())
+
 
 print("  # # # RUN COMPLETE # # #  ")
 print("Timestamp:", time("year"), time("day"), time("seconds"))

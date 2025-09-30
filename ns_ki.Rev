@@ -14,8 +14,8 @@ moves = VectorMoves()
 
 # Uniform prior on tree topologies
 topology ~ dnUniformTopology(taxa)
-moves.append( mvNNI(topology, weight = nEdge / 8.0) )
-moves.append( mvSPR(topology, weight = nEdge / 30.0) )
+moves.append( mvNNI(topology, weight = nEdge / 2.0) )
+moves.append( mvSPR(topology, weight = nEdge / 8.0) )
 
 
 # Compound dirichlet prior on edge length variability
