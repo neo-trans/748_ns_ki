@@ -9,15 +9,20 @@ maxPSRF = 1.01
 
 neo <- readDiscreteCharacterData("project748.neo.nex")
 trans <- readDiscreteCharacterData("project748.trans.nex")
-logFile = "748_ns_ki.log"
-paramFile = "748_ns_ki.p.log"
-treeFile = "748_ns_ki.trees"
-ckpFile = "748_ns_ki.ckp"
-source("ns_ki.Rev")
+pid = "748"
+script = "ns_ki"
+scriptBase = pid + "_" + script
+ckpFile = scriptBase + ".ckp"
+paramFile = scriptBase + ".p.log"
 
-monitors.append( mnModel(filename = logFile, printgen = 36) )
-monitors.append( mnModel(filename = paramFile, printgen = 6, stochasticOnly = TRUE, exclude = ["rel_br_lengths"]) )
-monitors.append( mnFile(filename = treeFile, printgen = 12, phylogeny) )
+source(script + ".Rev")
+checkFreq = 100
+
+monitors.append( mnModel(filename = scriptBase + ".log", printgen = 36) )
+monitors.append( mnModel(filename = paramFile, printgen = 6,
+                         stochasticOnly = TRUE, exclude = ["rel_br_lengths"]) )
+monitors.append( mnFile(filename = scriptBase + ".trees", printgen = 12,
+                        phylogeny) )
 
 mymc3 = mcmcmc(
   mymodel, monitors, moves,
@@ -30,7 +35,6 @@ mymc3 = mcmcmc(
 )
 print("   Created MCMCMC object")
 
-checkFreq = 100
 
 if (fileExists("748_ns_ki_run_1_chain_0.ckp")) {
   print("   Initializing from checkpoint")
@@ -47,7 +51,7 @@ stopping_rules[3] = srGelmanRubin(maxPSRF, paramFile, checkFreq)
 
 print("   Commencing MCMCMC run at",
       time("year"), time("day"), time("seconds") / 60 / 60)
-mymc3.run(rules = stopping_rules, checkpointFile = ckpFile, checkpointInterval = checkFreq, verbose = 2)
+mymc3.run(rules = stopping_rules, checkpointFile = ckpFile, checkpointInterval = checkFreq, verbose = 1)
 
 print("  # # # RUN COMPLETE # # #  ")
 print("Timestamp:", time("year"), time("day"), time("seconds") / 60 / 60)
